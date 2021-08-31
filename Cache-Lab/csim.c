@@ -20,7 +20,7 @@ typedef cache_line* associate;
 associate* cache_track;
 int hits = 0, misses = 0, evictions = 0;
 int verbos = 0, set_bits = 0, set_num_lines = 0, block_bits = 0;
-char trace_filename[50]; /* create file name buffer to ensure initial memory allocation */
+char trace_filename[MAX_STR_LEN]; /* create file name buffer to ensure initial memory allocation */
 
 int read_argv(int argc, char* argv[]){
     
@@ -144,7 +144,7 @@ int checkcache(uint64_t address){
 
     int max_timestamp = INT_MIN;
     int empty_line = -1;
-    int evic_idx = 0;
+    int evic_line = 0;
     associate cache_set = cache_track[set_idx];
     for (int i = 0; i < set_num_lines; i++){
         if (cache_set[i].valid) {
@@ -159,7 +159,7 @@ int checkcache(uint64_t address){
             /* = is necessary to get all credits that last line will be evicted if tie */
             /* to ensure this counter has the identical behavior as queue */
             if (cache_set[i].stamp >= max_timestamp){
-                evic_idx = i;
+                evic_line = i;
                 max_timestamp = cache_set[i].stamp;
             }
         }
@@ -169,16 +169,16 @@ int checkcache(uint64_t address){
     }
 
     misses++;
-    if (empty_line != -1){ /* update associate array to empty line */
+    if (empty_line != -1){ /* update associate array of empty line */
         cache_set[empty_line].valid = 1;
         cache_set[empty_line].stamp = 0;
         cache_set[empty_line].tag = tag_val;
         return 1;
-    } else { /* update associate array if eviction happen */
+    } else { /* update associate array of eviction line */
         evictions++;
-        cache_set[evic_idx].valid = 1;
-        cache_set[evic_idx].stamp = 0;
-        cache_set[evic_idx].tag = tag_val;
+        cache_set[evic_line].valid = 1;
+        cache_set[evic_line].stamp = 0;
+        cache_set[evic_line].tag = tag_val;
         return 2;
     }
 }
@@ -198,17 +198,17 @@ int main(int argc, char* argv[])
         exit(0);
     }
 
+    /* initialize an array to track cache */
+    status = initial_associate();
+    if (!status) {
+        fprintf(stderr, "Failed to allocate memory for cache tracking array\n");
+        exit(0);
+    }
+
     /* open trace file */
     FILE* trace_file = fopen(trace_filename, "r");
     if (!trace_file) {
         fprintf(stderr, "Failed to open trace file: %s\n", trace_filename);
-        exit(0);
-    }
-
-    /* initialize a array to track cache */
-    status = initial_associate();
-    if (!status) {
-        fprintf(stderr, "Failed to allocate memory for cache tracking array\n");
         exit(0);
     }
 
