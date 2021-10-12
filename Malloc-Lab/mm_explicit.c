@@ -163,41 +163,22 @@ void mm_free(void *bp)
 /*
  * mm_realloc - Implemented simply in terms of mm_malloc and mm_free
  */
-void *mm_realloc(void *bp, size_t size)
+void *mm_realloc(void *ptr, size_t size)
 {
-    void* new_bp;
-    if (bp == NULL) {
-        new_bp = mm_malloc(size);
-        return new_bp;
-    }
-    
-    if (size == 0) {
-        mm_free(bp);
-        return NULL;
-    }
+    void *oldptr = ptr;
+    void *newptr;
+    size_t copySize;
 
-    /* adjust size for alignment */
-    size_t asize;
-    if (size <= DSIZE)
-        asize = 2 * DSIZE;
-    else
-        asize = (((size + DSIZE) + (DSIZE - 1))/ DSIZE) * DSIZE; /* csapp p73. (x + (1<<k) - 1) >> k */
-
-    size_t old_size = GET_SIZE(HDRP(bp));
-    if (old_size == asize)
-        return bp;
-    else if (old_size > asize) {
-        place(bp, asize);
-        return bp;
-    }
-    else {
-        void *new_bp = mm_malloc(asize);
-        if (new_bp == NULL)
-            return NULL;
-        memcpy(new_bp, bp, asize - DSIZE);
-        mm_free(bp);
-        return new_bp;
-    }
+    newptr = mm_malloc(size);
+    if (newptr == NULL)
+      return NULL;
+    size = GET_SIZE(HDRP(oldptr));
+    copySize = GET_SIZE(HDRP(newptr));
+    if (size < copySize)
+      copySize = size;
+    memcpy(newptr, oldptr, copySize-WSIZE);
+    mm_free(oldptr);
+    return newptr;
 }
 
 static void *extend_heap(size_t words) {
