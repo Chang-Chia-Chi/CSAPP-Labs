@@ -20,5 +20,5 @@
   Shell Lab 對應第八章『異常控制流』，實作一個簡單的 shell tsh
 6. [Malloc Lab 筆記](https://hackmd.io/@Chang-Chia-Chi/r13xrF0Vt)    
     本次實驗要求學生實作動態記憶體分配器，包含 malloc、free 及 realloc
-7. [Proxy Lab 筆記](https://hackmd.io/@Chang-Chia-Chi/r13xrF0Vt)   
+7. [Proxy Lab 筆記](https://hackmd.io/@Chang-Chia-Chi/H1E3L6oOt)   
     實作一個可並行處理的 proxy，讓學員學習到 web 的 client-server 機制及多執行緒程式撰寫   
