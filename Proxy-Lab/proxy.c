@@ -201,7 +201,7 @@ void do_request(int clientfd) {
 void parse_uri(char *uri, char *hostname, char *path, int *port) {
     char *ptr, *host_ptr, *path_ptr, *port_ptr;
     ptr = strstr(uri, "//");
-    ptr = ptr? ptr+2:uri;
+    ptr = uri? ptr+2:uri;
     port_ptr = strstr(ptr, ":");
     if (!port_ptr) /* no specific port number */
     {
