@@ -11,6 +11,7 @@ void cache_init(cache_t *caches, int nblk) {
         sem_init(&caches[i].ready, 0, 1);
         sem_init(&caches[i].reader, 0, 1);
         sem_init(&caches[i].writer, 0, 1);
+        sem_init(&caches[i].resource, 0, 1);
     }
 }
 
@@ -63,11 +64,17 @@ void cache_evict(cache_t *caches, char *uri, char *buf, size_t nbytes) {
     caches[idx].writecnt++;
     if (caches[idx].writecnt == 1) 
         sem_wait(&caches[idx].ready);
+    sem_post(&caches[idx].writer);
+    
+    sem_wait(&caches[idx].resource);
     caches[idx].valid = 1;
     caches[idx].stamp = 0;
     caches[idx].bufsize = nbytes;
     strcpy(caches[idx].uri, uri);
     strcpy(caches[idx].buf, buf);
+    sem_post(&caches[idx].resource);
+    
+    sem_wait(&caches[idx].writer);
     caches[idx].writecnt--;
     if (caches[idx].writecnt == 0) 
         sem_post(&caches[idx].ready);

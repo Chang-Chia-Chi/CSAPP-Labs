@@ -17,6 +17,7 @@ typedef struct {
     sem_t ready;
     sem_t reader;
     sem_t writer;
+    sem_t resource;
 } cache_t;
 
 extern cache_t cache_blks[NUM_CACHE_BLK];
