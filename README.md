@@ -1,5 +1,5 @@
 # CSAPP-Labs
-這個 Repo 為 CSAPP/3e ICS Lab 的實作和筆記。整本讀完之後，確實對軟體系統層面有全面性的了解，誠摯建議對軟體系統行為有興趣的人，買書閱讀並動手實作吧!
+這個 Repo 為 CSAPP/3e ICS Lab 的實作和筆記。整本讀完之後，確實對軟體系統層面有全面性的了解，若對軟體系統行為有興趣的話，買書閱讀並動手實作吧!
 
 ## 實驗筆記
 1. [Data Lab 筆記](https://hackmd.io/@Chang-Chia-Chi/Sk9_ygs6_)   
